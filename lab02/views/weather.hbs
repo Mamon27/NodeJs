@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Сайт прогнозу погоди</title>
+</head>
+<body>
+  {{> header}}
+  <h1>Сторінка прогнозу погоди</h1>
+  <label for="cities">Вибрати місто:</label>
+  <select id="cities" name="city">
+    {{#each cities}}
+      <option value="{{this}}">{{this}}</option>
+    {{/each}}
+  </select>
+  <button onclick="getWeather()">Отримати прогноз</button>
+  <div id="weatherInfo"></div>
+  {{> footer}}
+
+  <script>
+    function getWeather() {
+      const selectedCity = document.getElementById('cities').value;
+      fetch(`/weather/${selectedCity}`)
+        .then(response => response.json())
+        .then(weatherData => {
+          const weatherInfo = `
+            <h2>Погода у місті ${selectedCity}</h2>
+            <p> Температура: ${weatherData.temperature}°C</p>
+            <p> Вологість: ${weatherData.humidity}%</p>
+            <p> Тиск: ${weatherData.pressure} hPa</p>
+          `;
+          document.getElementById('weatherInfo').innerHTML = weatherInfo;
+        })
+        .catch(error => console.error('Error fetching weather data:', error));
+    }
+  </script>
+</body>
+</html>
